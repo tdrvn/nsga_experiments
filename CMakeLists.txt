@@ -16,7 +16,11 @@ add_executable(c___nsga main.cpp
         globals.h
         OneMinMaxBenchmark.cpp
         OneJumpZeroJumpBenchmark.cpp
-        Balanced_NSGA.h)
+        Balanced_NSGA.h
+        Balanced_NSGA.cpp
+        test.cpp
+        test.h
+        NSGA.cpp)
 
 # Include JSONCpp headers
 target_include_directories(c___nsga PRIVATE ${JSONCPP_INCLUDE_DIRS})
