@@ -7,8 +7,8 @@
 
 
 int main() {
-    int k = 3;
-    int n = 20;
+    int k = 2;
+    int n = 10;
     int POP_SIZE = 4*(n - 2*k + 3);
 
     OneJumpZeroJumpBenchmark f(n, k);

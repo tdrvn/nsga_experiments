@@ -18,8 +18,6 @@ add_executable(c___nsga main.cpp
         OneJumpZeroJumpBenchmark.cpp
         Balanced_NSGA.h
         Balanced_NSGA.cpp
-        test.cpp
-        test.h
         NSGA.cpp)
 
 # Include JSONCpp headers
