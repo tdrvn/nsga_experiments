@@ -93,14 +93,19 @@ vector<Individual> NSGA::select_best_crowding_distance(const vector<Individual> 
     if(size_to_select == 0)
         return selection;
 
-    auto cd_sorted = compute_crowding_distance(res);
+    auto cd_sorted = this->compute_crowding_distance(res);
     for(auto itr = cd_sorted.rbegin(); itr != cd_sorted.rend() && selection.size() < size_to_select; itr++){
         auto &elements = (*itr).second;
         std::shuffle(elements.begin(), elements.end(), rand_gen);
-
-        while(elements.size() > 0 && selection.size() < size_to_select){
-            selection.push_back(elements.back());
-            elements.pop_back();
+        if(selection.size() + elements.size() <= size_to_select){
+            selection += elements;
+        }
+        else{
+            //only add extra elements
+            while(elements.size() > 0 && selection.size() < size_to_select){
+                selection.push_back(elements.back());
+                elements.pop_back();
+            }
         }
     }
     return selection;
@@ -109,6 +114,10 @@ vector<Individual> NSGA::select_best_crowding_distance(const vector<Individual> 
 int NSGA::run(){
     int iterations = 0;
     while(f.is_pareto_front_complete(pop) == false){
+        f.fitness_function_calls += POP_SIZE;
+
+        if(f.first_time_inner!= -1 && iter_reach_inner == -1)
+            iter_reach_inner = iterations;
         vector<Individual> offspring = pop;
         for(auto &x:offspring)
             x.mutate();

@@ -16,7 +16,7 @@ public:
     OneMinMaxBenchmark(int _n) : Benchmark(_n) {}
 
     virtual std::pair<int, int> compute(const Individual &x){
-        fitness_function_calls ++;
+        //fitness_function_calls ++;
         std::pair<int, int> ans = {0, 0};
         for(int i = 0; i < n; i++){
             if(x.bits[i] == 0)
@@ -33,7 +33,7 @@ public:
         for(int i = 0; i < pop.size(); i++){
             values.insert(compute(pop[i]));
         }
-        std::cerr<<"Pareto front is: "<<values.size()<<" out of "<<PARETO_FRONT_SIZE<<std::endl;
+        //std::cerr<<"Pareto front is: "<<values.size()<<" out of "<<PARETO_FRONT_SIZE<<std::endl;
         if(values.size() == PARETO_FRONT_SIZE)
             return true;
         return false;
