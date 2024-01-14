@@ -9,7 +9,7 @@
 #include <map>
 #include <iostream>
 
-class OneJumpZeroJumpBenchmark : public Benchmark{
+class OneJumpZeroJumpBenchmark : public Benchmark<2>{
 public:
     int k;
     int PARETO_FRONT_SIZE;
@@ -17,7 +17,7 @@ public:
 
     OneJumpZeroJumpBenchmark(int _n, int _k) : Benchmark(_n), k(_k), PARETO_FRONT_SIZE(_n - 2*_k + 3) {}
 
-    virtual std::pair<int, int> compute(const Individual &x){
+    virtual std::array<int, 2> compute(const Individual &x){
         //this->fitness_function_calls ++;
         int nr0 = 0, nr1 = 0;
         for(int i = 0; i < n; i++){
@@ -26,26 +26,27 @@ public:
             else
                 nr1++;
         }
-        std::pair<int, int> ans = {0, 0};
+        std::array<int, 2> ans = {0, 0};
         if(nr1 <= n - k || nr1 == n)
-            ans.first = k + nr1;
+            ans[0] = k + nr1;
         else
-            ans.first = n - nr1;
+            ans[0] = n - nr1;
 
         if(nr0 <= n - k || nr0 == n)
-            ans.second = k + nr0;
+            ans[1] = k + nr0;
         else
-            ans.second = n - nr0;
+            ans[1] = n - nr0;
 
         return ans;
     }
 
 
-    virtual bool is_pareto_front_complete(std::vector<Individual> &pop){
-        std::map<std::pair<int, int>, int> values;
+    virtual bool is_pareto_front_complete(const std::vector<Individual> &pop){
+        std::map<std::array<int, 2>, int> values;
         for(int i = 0; i < pop.size(); i++){
             auto val = compute(pop[i]);
-            values[val] = values[val] + 1;
+            if(val[0] + val[1] == n + 2 * k)
+                values[val] = values[val] + 1;
 
         }
         bool inner = true;

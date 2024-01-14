@@ -13,7 +13,7 @@ class Individual {
 public:
     std::vector<bool> bits;
     int n;
-    explicit Individual(int _n) : n(_n), bits(std::vector<bool> (_n)) {}
+    explicit Individual(int _n) : n(_n), bits(std::vector<bool> (_n, 0)) {}
 
     void initialize_individual(){
         std::bernoulli_distribution bit_distrib((double)1.0/2);

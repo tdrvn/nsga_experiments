@@ -7,12 +7,14 @@
 
 #include "NSGA.h"
 using namespace std;
-class Balanced_NSGA: public NSGA{
+template <std::size_t N_OBJ>
+class Balanced_NSGA: public NSGA<N_OBJ>{
 public:
 
-    Balanced_NSGA(int _n, int population_size, Benchmark &bench): NSGA(_n, population_size, bench) {}
+    Balanced_NSGA(int _n, int population_size, Benchmark<N_OBJ> &bench): NSGA<N_OBJ>(_n, population_size, bench) {}
 
-    vector<Individual> select_best_crowding_distance(const vector<Individual> &res, int size_to_select);
+    virtual
+    vector<Individual> select_best_crowding_distance(vector<Individual> &res, int size_to_select);
 };
 
 
