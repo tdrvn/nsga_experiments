@@ -18,8 +18,6 @@ public:
     Benchmark<N_OBJ> &f;
     vector<Individual> pop;
     int POP_SIZE;
-// to debug
-    int iter_reach_inner = -1;
 
     NSGA(int n, int population_size, Benchmark<N_OBJ> &bench): POP_SIZE(population_size), f(bench){
         for(int i = 0; i< POP_SIZE; i++){

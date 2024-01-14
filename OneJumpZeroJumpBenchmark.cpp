@@ -49,15 +49,15 @@ public:
                 values[val] = values[val] + 1;
 
         }
-        bool inner = true;
-        for(int i = k; i <= n - k; i++){
-            if(values.count({k + i, k +  n - i}) == false)
-                inner = false;
-        }
-        if(inner && first_time_inner == -1){
-            first_time_inner = fitness_function_calls;
-            std::cerr<<"Reached inner PF after "<<first_time_inner<<" calls"<<std::endl;
-        }
+//        bool inner = true;
+//        for(int i = k; i <= n - k; i++){
+//            if(values.count({k + i, k +  n - i}) == false)
+//                inner = false;
+//        }
+//        if(inner && first_time_inner == -1){
+//            first_time_inner = fitness_function_calls;
+//            std::cerr<<"Reached inner PF after "<<first_time_inner<<" calls"<<std::endl;
+//        }
 //        if(first_time_inner != -1){
 //            std::cerr<<"left pop: "<<values[{2*k, n}]<<"\n";
 //            std::cerr<<"right pop: "<<values[{n, 2*k}]<<"\n";

@@ -4,7 +4,6 @@
 #ifndef GLOBALS
 #define GLOBALS
 #include "globals.h"
-#define SEED 42
-std::mt19937 rand_gen(SEED);
+std::mt19937 rand_gen{};
 
 #endif

@@ -2,13 +2,6 @@
 
 template <std::size_t N_OBJ>
 map<int, vector<Individual> > NSGA<N_OBJ>::non_dominated_sort(vector<Individual> &res){
-    vector<std::array<int, N_OBJ>> values (res.size());
-    for(int i = 0; i < res.size(); i++){
-        values[i] = f.compute(res[i]);
-    }
-
-    //can try to optimize to O(Pop_Size log(pop_size))
-
 
     //special case to not do this in the case of OneMinMax
     if(b_type == 1){
@@ -18,56 +11,78 @@ map<int, vector<Individual> > NSGA<N_OBJ>::non_dominated_sort(vector<Individual>
         return ans;
     }
 
-    if(N_OBJ == 2){
-        //we are in bi - objective case, we can use some smarter way to compute the rank
+//instead of O(Pop_size ^ 2), we do O(f(Pop_size)^2) which should be much faster for our benchmarks
+    map<std::array<int, N_OBJ>, int> ranks_for_values;
+    for(int i = 0; i < res.size(); i++){
+        auto val = f.compute(res[i]);
+        ranks_for_values[val] = 0;
     }
-    vector<int> number_dominated (values.size());
-    unordered_map<int, vector<int>> positions_dominating; // probably huge
-    for(int i = 0; i < values.size(); i++){
-        for(int j = 0; j < values.size(); j++){
+    for(auto itr = ranks_for_values.rbegin(); itr != ranks_for_values.rend(); itr++){
+        int mxpref = 0;
+        auto &b1 = (*itr).first;
+        for(auto itr2 = ranks_for_values.rbegin(); itr2 != itr; itr2++){
+            if((*itr2).second <= mxpref)
+                continue;
+            auto &b2 = (*itr2).first; // i check if b2 dominates b1
             bool eq_dominates= true;
             bool strictly_dominates = false;
 
             for(int l = 0; l < N_OBJ; l++){
-                if(values[j][l] < values[i][l])
+                if(b2[l] < b1[l])
                     eq_dominates = false;
-                if(values[j][l] > values[i][l])
+                if(b2[l] > b1[l])
                     strictly_dominates = true;
             }
 
             if(eq_dominates && strictly_dominates){
-                number_dominated[i]++;
-                if(positions_dominating.count(j))
-                    positions_dominating[j].emplace_back(i);
-                else
-                    positions_dominating[j] = {i};
+                mxpref = (*itr2).second;
             }
-
         }
+        (*itr).second = mxpref + 1;
     }
 
-    map<int, vector<Individual> > ans;
-    int rank = 0;
-    while(true){
-        vector<Individual> current_rank;
-        vector<int> current_rank_idx;
-        for(int i = 0; i < number_dominated.size(); i++){
-            if(number_dominated[i] == 0){
-                current_rank.push_back(std::move(res[i]));
-                current_rank_idx.push_back(i);
-            }
-        }
-        if(current_rank.empty())
-            break;
-        ans[rank] = std::move(current_rank);
-        rank++;
-        for(auto i: current_rank_idx){
-            number_dominated[i] = -1;
-            for(auto dom:positions_dominating[i]){
-                number_dominated[dom]--;
-            }
-        }
+    map<int, vector<Individual>> ans;
+    for(int i = 0; i < res.size();i++){
+
+        int rank = ranks_for_values[f.compute(res[i])];
+        if(ans.count(rank))
+            ans[rank].push_back(std::move(res[i]));
+        else
+            ans[rank] = {std::move(res[i])};
     }
+
+//
+//    vector<int> number_dominated (values.size());
+//    unordered_map<int, vector<int>> positions_dominating; // probably huge
+//    for(int i = 0; i < values.size(); i++){
+//        for(int j = 0; j < values.size(); j++){
+//
+//
+//        }
+//    }
+//
+//    map<int, vector<Individual> > ans;
+//    int rank = 0;
+//    while(true){
+//        vector<Individual> current_rank;
+//        vector<int> current_rank_idx;
+//        for(int i = 0; i < number_dominated.size(); i++){
+//            if(number_dominated[i] == 0){
+//                current_rank.push_back(std::move(res[i]));
+//                current_rank_idx.push_back(i);
+//            }
+//        }
+//        if(current_rank.empty())
+//            break;
+//        ans[rank] = std::move(current_rank);
+//        rank++;
+//        for(auto i: current_rank_idx){
+//            number_dominated[i] = -1;
+//            for(auto dom:positions_dominating[i]){
+//                number_dominated[dom]--;
+//            }
+//        }
+//    }
     res.clear();
     return ans;
 }
@@ -155,9 +170,6 @@ int NSGA<N_OBJ>::run(){
     int iterations = 0;
     while(f.is_pareto_front_complete(pop) == false){
         f.fitness_function_calls += POP_SIZE;
-
-        if(f.first_time_inner!= -1 && iter_reach_inner == -1)
-            iter_reach_inner = iterations;
 
         vector<Individual> offspring = pop;
         for(auto &x:offspring)

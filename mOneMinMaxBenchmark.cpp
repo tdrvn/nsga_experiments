@@ -39,18 +39,18 @@ public:
             auto x = std::move(compute(pop[i]));
             values[x] = values[x] + 1;
         }
-        std::cerr<<"Pareto front is: "<<values.size()<<" out of "<<PARETO_FRONT_SIZE<<std::endl;
-        std::cerr<<"The values are:";
-        for(auto val: values){
-            std::cerr<<"( ";
-            for(int i = 0; i < M; i++)
-                std::cerr<<val.first[i]<<", ";
-            std::cerr<<": "<<val.second<<" ";
-            std::cerr<<" ), ";
-        }
-        std::cerr<<"\n";
-
-        std::cerr<<"Pareto front is: "<<values.size()<<" out of "<<PARETO_FRONT_SIZE<<std::endl;
+//        std::cerr<<"Pareto front is: "<<values.size()<<" out of "<<PARETO_FRONT_SIZE<<std::endl;
+//        std::cerr<<"The values are:";
+//        for(auto val: values){
+//            std::cerr<<"( ";
+//            for(int i = 0; i < M; i++)
+//                std::cerr<<val.first[i]<<", ";
+//            std::cerr<<": "<<val.second<<" ";
+//            std::cerr<<" ), ";
+//        }
+//        std::cerr<<"\n";
+//
+//        std::cerr<<"Pareto front is: "<<values.size()<<" out of "<<PARETO_FRONT_SIZE<<std::endl;
         if(values.size() == PARETO_FRONT_SIZE)
             return true;
         return false;

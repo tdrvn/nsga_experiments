@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include "NSGA.h"
 #include "NSGA.cpp"
 #include "Balanced_NSGA.h"
@@ -7,27 +8,46 @@
 #include "OneJumpZeroJumpBenchmark.cpp"
 #include "LeadingOnesTrailingZeroBenchmark.cpp"
 #include "mOneMinMaxBenchmark.cpp"
-#include <json/json.h>
+#include "globals.h"
 #include <stdio.h>
 
 
 
 int main() {
+    std::ofstream fout("experiment-onejumpzerojump.csv", std::ios::app);
+    fout<<"Benchmark,n,k,Pop_size,Number_run,Seed(initial),Runtime_Pareto_front,Variant_NSGA";
+    long long seed = 17948253413552098;
 
-    int n = 80;
-    int N =  (n/2 + 1) * (n/2 + 1) + 4 * (n/2 + 1);
+    //testing one jump zero jump
+    {
+        rand_gen.seed(seed);
+        for(int k = 2; k <=4; k++){
+            for(int n = 30; n <= 150; n+= 10){
+                for(int coef = 2; coef <= 8; coef *= 2){
+                    for(int nr_run = 1; nr_run <= 20; nr_run++){
+                        OneJumpZeroJumpBenchmark f(n, k);
+                        int pop_size = coef * f.PARETO_FRONT_SIZE;
+                        NSGA<2> standard_nsga(n, pop_size, f);
+                        auto rt = standard_nsga.run();
+                        fout<<"OneJumpZeroJump,"<<n<<","<<k<<","<<pop_size<<","<<nr_run<<","<<seed<<","<<rt<<","<<"standard"<<std::endl;
+                    }
+                }
+            }
+        }
 
-//    MOneMinMaxBenchmark<4> f1(n);
-//    NSGA<4> t_1(n, N, f1);
-//    t_1.b_type = 1;
-//    std::cout<<"Nr. iterations:"<<t_1.run()<<"\n";
-//    std::cout<<"Nr. runtime: "<<f1.fitness_function_calls<<"\n";
 
-
-    MOneMinMaxBenchmark<4> f2(n);
-    Balanced_NSGA<4> t_2(n, N, f2);
-    t_2.b_type = 1;
-    std::cout<<"Nr. iterations:"<<t_2.run()<<"\n";
-    std::cout<<"Nr. runtime: "<<f2.fitness_function_calls<<"\n";
-    return 0;
+        for(int k = 2; k <=4; k++){
+            for(int n = 30; n <= 150; n+= 10){
+                for(int coef = 2; coef <= 8; coef *= 2){
+                    for(int nr_run = 1; nr_run <= 20; nr_run++){
+                        OneJumpZeroJumpBenchmark f(n, k);
+                        int pop_size = coef * f.PARETO_FRONT_SIZE;
+                        Balanced_NSGA<2> balanced_nsga(n, pop_size, f);
+                        auto rt = balanced_nsga.run();
+                        fout<<"OneJumpZeroJump,"<<n<<","<<k<<","<<pop_size<<","<<nr_run<<","<<seed<<","<<rt<<","<<"balanced"<<std::endl;
+                    }
+                }
+            }
+        }
+    }
 }
