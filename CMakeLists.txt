@@ -20,6 +20,7 @@ add_executable(c___nsga main.cpp
         Balanced_NSGA.cpp
         NSGA.cpp
         LeadingOnesTrailingZeroBenchmark.cpp
+        mOneMinMaxBenchmark.cpp
 )
 
 # Include JSONCpp headers
