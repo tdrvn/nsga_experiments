@@ -33,7 +33,7 @@ public:
         for(int i = 0; i < pop.size(); i++){
             values.insert(compute(pop[i]));
         }
-        std::cerr<<"Pareto front is: "<<values.size()<<" out of "<<PARETO_FRONT_SIZE<<std::endl;
+        //std::cerr<<"Pareto front is: "<<values.size()<<" out of "<<PARETO_FRONT_SIZE<<std::endl;
         if(values.size() == PARETO_FRONT_SIZE)
             return true;
         return false;

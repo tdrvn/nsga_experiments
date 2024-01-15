@@ -38,7 +38,7 @@ public:
             if(x[0] + x[1] == n)
                 values.insert(x);
         }
-        std::cerr<<"Pareto front is: "<<values.size()<<" out of "<<PARETO_FRONT_SIZE<<std::endl;
+        //std::cerr<<"Pareto front is: "<<values.size()<<" out of "<<PARETO_FRONT_SIZE<<std::endl;
         if(values.size() == PARETO_FRONT_SIZE)
             return true;
         return false;

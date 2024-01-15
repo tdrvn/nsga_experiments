@@ -48,7 +48,7 @@ public:
     virtual //size_to_select is always smaller than res
     vector<Individual> select_best_crowding_distance(vector<Individual> &res, int size_to_select);
 
-    int run();
+    long long run();
 };
 
 

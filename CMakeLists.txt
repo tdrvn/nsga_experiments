@@ -28,3 +28,5 @@ target_include_directories(c___nsga PRIVATE ${JSONCPP_INCLUDE_DIRS})
 
 # Link against JSONCpp library
 target_link_libraries(c___nsga PRIVATE ${JSONCPP_LIBRARIES})
+
+add_compile_options(-O3)

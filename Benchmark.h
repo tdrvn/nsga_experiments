@@ -12,7 +12,7 @@
 template <std::size_t N_OBJECTIVES>
 class Benchmark {
 public:
-    int fitness_function_calls = 0;
+    long long fitness_function_calls = 0;
     int n;
 
     //to debug

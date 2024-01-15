@@ -166,10 +166,10 @@ vector<Individual> NSGA<N_OBJ>::select_best_crowding_distance(vector<Individual>
 }
 
 template <std::size_t N_OBJ>
-int NSGA<N_OBJ>::run(){
+long long NSGA<N_OBJ>::run(){
     int iterations = 0;
     while(f.is_pareto_front_complete(pop) == false){
-        f.fitness_function_calls += POP_SIZE;
+        f.fitness_function_calls += (long long)POP_SIZE;
 
         vector<Individual> offspring = pop;
         for(auto &x:offspring)
