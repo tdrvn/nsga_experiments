@@ -3,9 +3,6 @@ project(c___nsga)
 
 set(CMAKE_CXX_STANDARD 17)
 
-# Find JSONCpp package
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(JSONCPP REQUIRED jsoncpp)
 
 # Add your source files
 add_executable(c___nsga main.cpp
@@ -22,11 +19,5 @@ add_executable(c___nsga main.cpp
         LeadingOnesTrailingZeroBenchmark.cpp
         mOneMinMaxBenchmark.cpp
 )
-
-# Include JSONCpp headers
-target_include_directories(c___nsga PRIVATE ${JSONCPP_INCLUDE_DIRS})
-
-# Link against JSONCpp library
-target_link_libraries(c___nsga PRIVATE ${JSONCPP_LIBRARIES})
 
 add_compile_options(-O3)
