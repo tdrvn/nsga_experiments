@@ -14,7 +14,6 @@ using namespace std;
 template <std::size_t N_OBJ>
 class NSGA {
 public:
-    int b_type = 0;
     Benchmark<N_OBJ> &f;
     vector<Individual> pop;
     int POP_SIZE;

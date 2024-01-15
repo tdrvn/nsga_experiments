@@ -3,15 +3,15 @@
 template <std::size_t N_OBJ>
 map<int, vector<Individual> > NSGA<N_OBJ>::non_dominated_sort(vector<Individual> &res){
 
-    //special case to not do this in the case of OneMinMax
-    if(b_type == 1){
-        map<int, vector<Individual> > ans;
-        ans[0] = std::move(res);
-        res.clear();
-        return ans;
-    }
+//    //special case to not do this in the case of OneMinMax
+//    if(b_type == 1){
+//        map<int, vector<Individual> > ans;
+//        ans[0] = std::move(res);
+//        res.clear();
+//        return ans;
+//    }
 
-//instead of O(Pop_size ^ 2), we do O(f(Pop_size)^2) which should be much faster for our benchmarks
+//instead of O(Pop_size ^ 2), we do O(f(Pop_size)^2) which should be faster for our benchmarks
     map<std::array<int, N_OBJ>, int> ranks_for_values;
     for(int i = 0; i < res.size(); i++){
         auto val = f.compute(res[i]);
@@ -94,7 +94,10 @@ vector<double> NSGA<N_OBJ>::compute_crowding_distance_objective(const vector<std
     for(int i = 0; i < values.size(); i++){
         val_ind[i] = {values[i][obj], i};
     }
-    sort(val_ind.begin(), val_ind.end());
+    //sort just by cd
+    sort(val_ind.begin(), val_ind.end(),
+         [](const std::pair<int,int>& p1, const std::pair<int,int>& p2)
+            { return p1.first < p2.first; });
 
     vector<double> ans(val_ind.size(), 0);
     if(val_ind.empty())
