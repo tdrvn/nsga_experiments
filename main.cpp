@@ -120,7 +120,7 @@ void test_4OneMinMax_balanced(int k, int n, int coef, unsigned long seed, int nr
 }
 
 int main() {
-    std::ofstream fout("experiments-final-ojzj-extra.csv");
+    std::ofstream fout("experiments-final-4omm.csv");
     //fout << "Benchmark,n,k,Pop_size,Number_run,Seed,Runtime_Pareto_front,Variant_NSGA\n";
     std::mt19937 seed_generator(1);
     const int RUNS = 20;
@@ -281,7 +281,7 @@ int main() {
                         {
                             auto seed = seed_generator();
 
-                            test_LeadingOnesTrailingZeros_balanced(k, n, coef, seed, nr_run, fout);
+                            test_4OneMinMax_balanced(k, n, coef, seed, nr_run, fout);
                         }
                     }
                 }
