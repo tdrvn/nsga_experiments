@@ -90,7 +90,7 @@ void test_OneJumpZeroJump_balanced(int k, int n, int coef, unsigned long seed, i
 }
 
 int main() {
-    std::ofstream fout("experiments-final-lotz-extra.csv");
+    std::ofstream fout("experiments-final-ojzj-extra.csv");
     //fout << "Benchmark,n,k,Pop_size,Number_run,Seed,Runtime_Pareto_front,Variant_NSGA\n";
     std::mt19937 seed_generator(1);
     const int RUNS = 20;
@@ -182,6 +182,7 @@ int main() {
 
     //LeadingOnesTrailingZeros
     {
+        /*
         seed_generator.seed(4);
         for (int k = 1; k <= 1; k++) {
             for (int n = NMIN; n <= NMAX; n += 10) {
@@ -203,16 +204,16 @@ int main() {
                 }
             }
         }
+         */
     }
 
     //OneJumpZeroJump
     {
-        /*
         seed_generator.seed(5);
         for (int k = 3; k <= 3; k++) {
             for (int n = NMIN; n <= NMAX; n += 10) {
-                for (int coef = 2; coef <= 8; coef *= 2) {
-                    for (int nr_run = 1; nr_run <= RUNS; nr_run++) {
+                for (int coef = 2; coef <= 16; coef *= 2) {
+                    for (int nr_run = 1; nr_run <= RUNS + EXTRA_RUNS; nr_run++) {
                         //classic
                         {
                             auto seed = seed_generator();
@@ -229,7 +230,5 @@ int main() {
                 }
             }
         }
-    }
-    */
     }
 }
