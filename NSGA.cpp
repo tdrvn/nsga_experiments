@@ -3,13 +3,13 @@
 template <std::size_t N_OBJ>
 map<int, vector<Individual> > NSGA<N_OBJ>::non_dominated_sort(vector<Individual> &res){
 
-//    //special case to not do this in the case of OneMinMax
-//    if(b_type == 1){
-//        map<int, vector<Individual> > ans;
-//        ans[0] = std::move(res);
-//        res.clear();
-//        return ans;
-//    }
+    //special case to not do this in the case of OneMinMax variants (all individuals have rank 0)
+    if(b_type == 1){
+        map<int, vector<Individual> > ans;
+        ans[0] = std::move(res);
+        res.clear();
+        return ans;
+    }
 
     // special case for OneJumpZeroJump (less computation)
     // the ranks need to be inverse

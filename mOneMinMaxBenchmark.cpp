@@ -16,7 +16,7 @@ class MOneMinMaxBenchmark : public Benchmark<M>{
 public:
     int PARETO_FRONT_SIZE = 0;
     int nprime = 0;
-    explicit MOneMinMaxBenchmark(int _n) : Benchmark<M>(_n), PARETO_FRONT_SIZE(std::pow(this->n/2 + 1, M/2)), nprime(_n / (M/2)) {}
+    explicit MOneMinMaxBenchmark(int _n) : Benchmark<M>(_n), PARETO_FRONT_SIZE(std::pow(this->n/ (M/2) + 1, M/2)), nprime(_n / (M/2)) {}
 
     virtual std::array<int, M> compute(const Individual &x){
         //fitness_function_calls ++;

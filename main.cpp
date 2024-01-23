@@ -89,6 +89,36 @@ void test_OneJumpZeroJump_balanced(int k, int n, int coef, unsigned long seed, i
          << "," << rt << "," << "balanced" << std::endl;
 }
 
+
+
+void test_4OneMinMax_classic(int k, int n, int coef, unsigned long seed, int nr_run, std::ostream& fout){
+    rand_gen.seed(seed);
+
+    MOneMinMaxBenchmark<4> f(n);
+    int pop_size = coef * f.PARETO_FRONT_SIZE;
+
+    NSGA<4> standard_nsga(n, pop_size, f);
+    standard_nsga.b_type = 1;
+    standard_nsga.run();
+    auto rt = f.fitness_function_calls;
+    fout << "4-OneMinMax," << n << "," << k << "," << pop_size << "," << nr_run << "," << seed
+         << "," << rt << "," << "classic" << std::endl;
+}
+void test_4OneMinMax_balanced(int k, int n, int coef, unsigned long seed, int nr_run, std::ostream& fout){
+    rand_gen.seed(seed);
+
+    MOneMinMaxBenchmark<4> f(n);
+    int pop_size = coef * f.PARETO_FRONT_SIZE;
+
+    Balanced_NSGA<4> balanced_nsga(n, pop_size, f);
+    balanced_nsga.b_type = 1;
+
+    balanced_nsga.run();
+    auto rt = f.fitness_function_calls;
+    fout << "4OneMinMax," << n << "," << k << "," << pop_size << "," << nr_run << "," << seed
+         << "," << rt << "," << "balanced" << std::endl;
+}
+
 int main() {
     std::ofstream fout("experiments-final-ojzj-extra.csv");
     //fout << "Benchmark,n,k,Pop_size,Number_run,Seed,Runtime_Pareto_front,Variant_NSGA\n";
@@ -209,6 +239,7 @@ int main() {
 
     //OneJumpZeroJump
     {
+        /*
         seed_generator.seed(5);
         for (int k = 3; k <= 3; k++) {
             for (int n = NMIN; n <= NMAX; n += 10) {
@@ -230,5 +261,32 @@ int main() {
                 }
             }
         }
+        */
+    }
+
+    //4OneMinMax
+    {
+        seed_generator.seed(6);
+        for (int k = 1; k <= 1; k++) {
+            for (int n = NMIN; n <= NMAX; n += 10) {
+                for (int coef = 2; coef <= 8; coef *= 2) {
+                    for (int nr_run = 1; nr_run <= RUNS + EXTRA_RUNS; nr_run++) {
+//                        //classic - does not converge in this example
+//                        {
+//                            auto seed = seed_generator();
+//
+//                            test_LeadingOnesTrailingZeros_classic(k, n, coef, seed, nr_run, fout);
+//                        }
+                        //balanced
+                        {
+                            auto seed = seed_generator();
+
+                            test_LeadingOnesTrailingZeros_balanced(k, n, coef, seed, nr_run, fout);
+                        }
+                    }
+                }
+            }
+        }
+
     }
 }
