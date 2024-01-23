@@ -14,6 +14,7 @@ class Benchmark {
 public:
     long long fitness_function_calls = 0;
     int n;
+    int k = 0;
 
     //to debug
     int first_time_inner = -1;

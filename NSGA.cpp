@@ -11,6 +11,23 @@ map<int, vector<Individual> > NSGA<N_OBJ>::non_dominated_sort(vector<Individual>
 //        return ans;
 //    }
 
+    // special case for OneJumpZeroJump (less computation)
+    // the ranks need to be inverse
+    // in this case they are not consecutive numbers, but it doesnt matter as they are sorted increasingly
+    // (and for this benchmark and inidividual with a strictly bigger sum always dominates one with a smaller sum
+    if(b_type == 3){
+        map<int, vector<Individual> > ans;
+        for(auto &x: res){
+            auto val = f.compute(x);
+            auto rank = 2 * f.k + f.n - val[0] - val[1];
+            if(ans.count(rank))
+                ans[rank].push_back(x);
+            else
+                ans[rank] = {x};
+        }
+        return ans;
+    }
+
 //instead of O(Pop_size ^ 2), we do O(f(Pop_size)^2) which should be faster for our benchmarks
     map<std::array<int, N_OBJ>, int> ranks_for_values;
     for(int i = 0; i < res.size(); i++){
@@ -50,39 +67,6 @@ map<int, vector<Individual> > NSGA<N_OBJ>::non_dominated_sort(vector<Individual>
         else
             ans[rank] = {std::move(res[i])};
     }
-
-//
-//    vector<int> number_dominated (values.size());
-//    unordered_map<int, vector<int>> positions_dominating; // probably huge
-//    for(int i = 0; i < values.size(); i++){
-//        for(int j = 0; j < values.size(); j++){
-//
-//
-//        }
-//    }
-//
-//    map<int, vector<Individual> > ans;
-//    int rank = 0;
-//    while(true){
-//        vector<Individual> current_rank;
-//        vector<int> current_rank_idx;
-//        for(int i = 0; i < number_dominated.size(); i++){
-//            if(number_dominated[i] == 0){
-//                current_rank.push_back(std::move(res[i]));
-//                current_rank_idx.push_back(i);
-//            }
-//        }
-//        if(current_rank.empty())
-//            break;
-//        ans[rank] = std::move(current_rank);
-//        rank++;
-//        for(auto i: current_rank_idx){
-//            number_dominated[i] = -1;
-//            for(auto dom:positions_dominating[i]){
-//                number_dominated[dom]--;
-//            }
-//        }
-//    }
     res.clear();
     return ans;
 }

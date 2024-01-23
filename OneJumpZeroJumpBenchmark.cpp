@@ -11,11 +11,10 @@
 
 class OneJumpZeroJumpBenchmark : public Benchmark<2>{
 public:
-    int k;
     int PARETO_FRONT_SIZE;
 
 
-    OneJumpZeroJumpBenchmark(int _n, int _k) : Benchmark(_n), k(_k), PARETO_FRONT_SIZE(_n - 2*_k + 3) {}
+    OneJumpZeroJumpBenchmark(int _n, int _k) : Benchmark(_n), PARETO_FRONT_SIZE(_n - 2*_k + 3) { k = _k; }
 
     virtual std::array<int, 2> compute(const Individual &x){
         //this->fitness_function_calls ++;
@@ -72,6 +71,8 @@ public:
             return true;
         return false;
     }
+
+
 
 };
 
