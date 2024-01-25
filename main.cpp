@@ -101,7 +101,7 @@ void test_4OneMinMax_classic(int k, int n, int coef, unsigned long seed, int nr_
     standard_nsga.b_type = 1;
     standard_nsga.run();
     auto rt = f.fitness_function_calls;
-    fout << "4-OneMinMax," << n << "," << k << "," << pop_size << "," << nr_run << "," << seed
+    fout << "4OneMinMax," << n << "," << k << "," << pop_size << "," << nr_run << "," << seed
          << "," << rt << "," << "classic" << std::endl;
 }
 void test_4OneMinMax_balanced(int k, int n, int coef, unsigned long seed, int nr_run, std::ostream& fout){
@@ -120,8 +120,16 @@ void test_4OneMinMax_balanced(int k, int n, int coef, unsigned long seed, int nr
 }
 
 int main() {
-    std::ofstream fout("experiments-final-4omm.csv");
-    //fout << "Benchmark,n,k,Pop_size,Number_run,Seed,Runtime_Pareto_front,Variant_NSGA\n";
+    /**
+     * Running this file will generate exactly the same experimental data. Note that NMAX = 120 for OneJumpZeroJump, k = 3
+     * is very slow, so we only ran it until NMAX = 50 and for 20 runs. All the other generate the exact same seed sequence as in the data
+     * and in those conditions. If you want to just run a specific example, call the corresponding function with the right parameters
+     * (the ones that are printed the data).
+     */
+
+
+    std::ofstream fout("experimental_data.csv");
+    fout << "Benchmark,n,k,Pop_size,Number_run,Seed,Runtime_Pareto_front,Variant_NSGA\n";
     std::mt19937 seed_generator(1);
     const int RUNS = 20;
     const int EXTRA_RUNS = 30;
@@ -137,7 +145,7 @@ int main() {
          * For the other benchmarks, there is just one run with all the tests at the same time.
          * OneJumpZeroJump was too slow to run for all the values and was ended sooner
          */
-        /*
+
        seed_generator.seed(1);
        for(int k = 1; k <= 1; k++){
            for (int n = NMIN; n <= NMAX; n += 10) {
@@ -206,13 +214,13 @@ int main() {
                }
            }
        }
-       */
+
     }
 
 
     //LeadingOnesTrailingZeros
     {
-        /*
+
         seed_generator.seed(4);
         for (int k = 1; k <= 1; k++) {
             for (int n = NMIN; n <= NMAX; n += 10) {
@@ -234,17 +242,22 @@ int main() {
                 }
             }
         }
-         */
+
     }
 
     //OneJumpZeroJump
     {
-        /*
-        seed_generator.seed(5);
+        /**
+         * In order to get the exact same data points, the seed needs to be the same as it was before (which was a slightly different testing environment.
+         * This is why we need the discard (2400).
+         */
+        seed_generator.seed(1);
+        seed_generator.discard(2400);
+
         for (int k = 3; k <= 3; k++) {
-            for (int n = NMIN; n <= NMAX; n += 10) {
-                for (int coef = 2; coef <= 16; coef *= 2) {
-                    for (int nr_run = 1; nr_run <= RUNS + EXTRA_RUNS; nr_run++) {
+            for (int n = NMIN; n <= 50; n += 10) {
+                for (int coef = 2; coef <= 8; coef *= 2) {
+                    for (int nr_run = 1; nr_run <= RUNS; nr_run++) {
                         //classic
                         {
                             auto seed = seed_generator();
@@ -261,11 +274,11 @@ int main() {
                 }
             }
         }
-        */
     }
 
     //4OneMinMax
     {
+
         seed_generator.seed(6);
         for (int k = 1; k <= 1; k++) {
             for (int n = NMIN; n <= NMAX; n += 10) {
