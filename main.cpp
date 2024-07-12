@@ -10,6 +10,8 @@
 #include "mOneMinMaxBenchmark.cpp"
 #include "globals.h"
 #include <stdio.h>
+#include <chrono>
+using namespace std::chrono;
 
 
 void test_OneMinMax_classic(int k, int n, int coef, unsigned long seed, int nr_run, std::ostream& fout){
@@ -19,10 +21,14 @@ void test_OneMinMax_classic(int k, int n, int coef, unsigned long seed, int nr_r
     int pop_size = coef * f.PARETO_FRONT_SIZE;
 
     NSGA<2> standard_nsga(n, pop_size, f);
+    auto start = high_resolution_clock::now();
     standard_nsga.run();
+    auto end = high_resolution_clock ::now();
     auto rt = f.fitness_function_calls;
+
+    auto duration = duration_cast<milliseconds>(end - start);
     fout << "OneMinMax," << n << "," << k << "," << pop_size << "," << nr_run << "," << seed
-         << "," << rt << "," << "classic" << std::endl;
+         << "," << rt << ","<<duration.count() << ", classic" << std::endl;
 }
 void test_OneMinMax_balanced(int k, int n, int coef, unsigned long seed, int nr_run, std::ostream& fout){
     rand_gen.seed(seed);
@@ -31,10 +37,16 @@ void test_OneMinMax_balanced(int k, int n, int coef, unsigned long seed, int nr_
     int pop_size = coef * f.PARETO_FRONT_SIZE;
 
     Balanced_NSGA<2> balanced_nsga(n, pop_size, f);
+
+    auto start = high_resolution_clock::now();
     balanced_nsga.run();
+    auto end = high_resolution_clock ::now();
+
     auto rt = f.fitness_function_calls;
+    auto duration = duration_cast<milliseconds>(end - start);
+
     fout << "OneMinMax," << n << "," << k << "," << pop_size << "," << nr_run << "," << seed
-         << "," << rt << "," << "balanced" << std::endl;
+         << "," << rt << ","<<duration.count() << ", balanced" << std::endl;
 }
 
 void test_LeadingOnesTrailingZeros_classic(int k, int n, int coef, unsigned long seed, int nr_run, std::ostream& fout){
@@ -128,8 +140,8 @@ int main() {
      */
 
 
-    std::ofstream fout("experimental_data.csv");
-    fout << "Benchmark,n,k,Pop_size,Number_run,Seed,Runtime_Pareto_front,Variant_NSGA\n";
+    std::ofstream fout("experimental_dat_OJZJ_full_test.csv");
+    fout << "Benchmark,n,k,Pop_size,Number_run,Seed,Runtime_Pareto_front,Total_Runtime(ms),Variant_NSGA\n";
     std::mt19937 seed_generator(1);
     const int RUNS = 20;
     const int EXTRA_RUNS = 30;
@@ -139,111 +151,112 @@ int main() {
 
 
     //OneMinMax
-    {
+    //{
         /**
          * Note that for OneMinMax there are 3 different seeds set, as we needed to add extra tests without invalidating the old ones.
          * For the other benchmarks, there is just one run with all the tests at the same time.
          * OneJumpZeroJump was too slow to run for all the values and was ended sooner
          */
 
-       seed_generator.seed(1);
-       for(int k = 1; k <= 1; k++){
-           for (int n = NMIN; n <= NMAX; n += 10) {
-               for (int coef = 2; coef <= 8; coef *= 2) {
-                   for (int nr_run = 1; nr_run <= RUNS; nr_run++) {
-                       //classic
-                       {
-                           auto seed = seed_generator();
-
-                           test_OneMinMax_classic(k, n, coef, seed, nr_run, fout);
-                       }
-                       //balanced
-                       {
-                           auto seed = seed_generator();
-
-                           test_OneMinMax_balanced(k, n, coef, seed, nr_run, fout);
-                       }
-                   }
-               }
-           }
-       }
-
-       //TRY for N = 16 M
-       seed_generator.seed(2);
-      // one min max for N = 16M,  just 30 runs
-       for(int k = 1; k <= 1; k++){
-           for (int n = NMIN; n <= NMAX; n += 10) {
-               for (int coef = 16; coef <= 16; coef *= 2) {
-                   for (int nr_run = 1; nr_run <= RUNS; nr_run++) {
-                       //classic
-                       {
-                           auto seed = seed_generator();
-
-                           test_OneMinMax_classic(k, n, coef, seed, nr_run, fout);
-                       }
-                       //balanced
-                       {
-                           auto seed = seed_generator();
-
-                           test_OneMinMax_balanced(k, n, coef, seed, nr_run, fout);
-                       }
-                   }
-               }
-           }
-       }
-       //EXTRA RUNS OMM
-       seed_generator.seed(3);
-       //OneMinMax
-       for(int k = 1; k <= 1; k++){
-           for (int n = NMIN; n <= NMAX; n += 10) {
-               for (int coef = 2; coef <= 16; coef *= 2) {
-                   for (int nr_run = RUNS + 1; nr_run <= RUNS + EXTRA_RUNS; nr_run++) {
-                       //classic
-                       {
-                           auto seed = seed_generator();
-
-                           test_OneMinMax_classic(k, n, coef, seed, nr_run, fout);
-                       }
-                       //balanced
-                       {
-                           auto seed = seed_generator();
-
-                           test_OneMinMax_balanced(k, n, coef, seed, nr_run, fout);
-                       }
-                   }
-               }
-           }
-       }
-
-    }
-
-
-    //LeadingOnesTrailingZeros
-    {
-
-        seed_generator.seed(4);
-        for (int k = 1; k <= 1; k++) {
-            for (int n = NMIN; n <= NMAX; n += 10) {
-                for (int coef = 2; coef <= 16; coef *= 2) {
-                    for (int nr_run = 1; nr_run <= RUNS + EXTRA_RUNS; nr_run++) {
-                        //classic
-                        {
-                            auto seed = seed_generator();
-
-                            test_LeadingOnesTrailingZeros_classic(k, n, coef, seed, nr_run, fout);
-                        }
-                        //balanced
-                        {
-                            auto seed = seed_generator();
-
-                            test_LeadingOnesTrailingZeros_balanced(k, n, coef, seed, nr_run, fout);
-                        }
-                    }
-                }
-            }
-        }
-
-    }
+//       seed_generator.seed(1);
+//       for(int k = 1; k <= 1; k++){
+//           for (int n = NMIN; n <= NMAX; n += 10) {
+//               for (int coef = 2; coef <= 8; coef *= 2) {
+//                   for (int nr_run = 1; nr_run <= RUNS; nr_run++) {
+//                       //classic
+//                       {
+//                           auto seed = seed_generator();
+//
+//                           test_OneMinMax_classic(k, n, coef, seed, nr_run, fout);
+//                       }
+//                       //balanced
+//                       {
+//                           auto seed = seed_generator();
+//
+//                           test_OneMinMax_balanced(k, n, coef, seed, nr_run, fout);
+//                       }
+//                   }
+//               }
+//           }
+//       }
+//
+//       //TRY for N = 16 M
+//       seed_generator.seed(2);
+//      // one min max for N = 16M,  just 20 runs
+//       for(int k = 1; k <= 1; k++){
+//           for (int n = NMIN; n <= NMAX; n += 10) {
+//               for (int coef = 16; coef <= 16; coef *= 2) {
+//                   for (int nr_run = 1; nr_run <= RUNS; nr_run++) {
+//                       //classic
+//                       {
+//                           auto seed = seed_generator();
+//
+//                           test_OneMinMax_classic(k, n, coef, seed, nr_run, fout);
+//                       }
+//                       //balanced
+//                       {
+//                           auto seed = seed_generator();
+//
+//                           test_OneMinMax_balanced(k, n, coef, seed, nr_run, fout);
+//                       }
+//                   }
+//               }
+//           }
+//       }
+//       printf("Finished preliminary!\n");
+//       //EXTRA RUNS OMM
+//       seed_generator.seed(3);
+//       //OneMinMax
+//       for(int k = 1; k <= 1; k++){
+//           for (int n = NMIN; n <= NMAX; n += 10) {
+//               for (int coef = 2; coef <= 16; coef *= 2) {
+//                   for (int nr_run = RUNS + 1; nr_run <= RUNS + EXTRA_RUNS; nr_run++) {
+//                       //classic
+//                       {
+//                           auto seed = seed_generator();
+//
+//                           test_OneMinMax_classic(k, n, coef, seed, nr_run, fout);
+//                       }
+//                       //balanced
+//                       {
+//                           auto seed = seed_generator();
+//
+//                           test_OneMinMax_balanced(k, n, coef, seed, nr_run, fout);
+//                       }
+//                   }
+//               }
+//           }
+//       }
+//
+//    }
+//
+//
+//    //LeadingOnesTrailingZeros
+//    {
+//
+//        seed_generator.seed(4);
+//        for (int k = 1; k <= 1; k++) {
+//            for (int n = NMIN; n <= NMAX; n += 10) {
+//                for (int coef = 2; coef <= 16; coef *= 2) {
+//                    for (int nr_run = 1; nr_run <= RUNS + EXTRA_RUNS; nr_run++) {
+//                        //classic
+//                        {
+//                            auto seed = seed_generator();
+//
+//                            test_LeadingOnesTrailingZeros_classic(k, n, coef, seed, nr_run, fout);
+//                        }
+//                        //balanced
+//                        {
+//                            auto seed = seed_generator();
+//
+//                            test_LeadingOnesTrailingZeros_balanced(k, n, coef, seed, nr_run, fout);
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//
+//    }
 
     //OneJumpZeroJump
     {
@@ -257,7 +270,7 @@ int main() {
         for (int k = 3; k <= 3; k++) {
             for (int n = NMIN; n <= 50; n += 10) {
                 for (int coef = 2; coef <= 8; coef *= 2) {
-                    for (int nr_run = 1; nr_run <= RUNS; nr_run++) {
+                    for (int nr_run = 1; nr_run <= RUNS + EXTRA_RUNS; nr_run++) {
                         //classic
                         {
                             auto seed = seed_generator();
@@ -276,30 +289,30 @@ int main() {
         }
     }
 
-    //4OneMinMax
-    {
-
-        seed_generator.seed(6);
-        for (int k = 1; k <= 1; k++) {
-            for (int n = NMIN; n <= NMAX; n += 10) {
-                for (int coef = 2; coef <= 8; coef *= 2) {
-                    for (int nr_run = 1; nr_run <= RUNS + EXTRA_RUNS; nr_run++) {
-//                        //classic - does not converge in this example
+//    //4OneMinMax
+//    {
+//
+//        seed_generator.seed(6);
+//        for (int k = 1; k <= 1; k++) {
+//            for (int n = NMIN; n <= NMAX; n += 10) {
+//                for (int coef = 2; coef <= 8; coef *= 2) {
+//                    for (int nr_run = 1; nr_run <= RUNS + EXTRA_RUNS; nr_run++) {
+////                        //classic - does not converge in this example
+////                        {
+////                            auto seed = seed_generator();
+////
+////                            test_LeadingOnesTrailingZeros_classic(k, n, coef, seed, nr_run, fout);
+////                        }
+//                        //balanced
 //                        {
 //                            auto seed = seed_generator();
 //
-//                            test_LeadingOnesTrailingZeros_classic(k, n, coef, seed, nr_run, fout);
+//                            test_4OneMinMax_balanced(k, n, coef, seed, nr_run, fout);
 //                        }
-                        //balanced
-                        {
-                            auto seed = seed_generator();
-
-                            test_4OneMinMax_balanced(k, n, coef, seed, nr_run, fout);
-                        }
-                    }
-                }
-            }
-        }
-
-    }
+//                    }
+//                }
+//            }
+//        }
+//
+//    }
 }
