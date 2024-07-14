@@ -2,9 +2,14 @@
 template <size_t N_OBJ>
 vector<Individual> Balanced_NSGA<N_OBJ>::select_best_crowding_distance(vector<Individual> &res, int size_to_select){
     //std::cerr<<"Using the right one!"<<std::endl;
+    auto t_start = std::chrono::high_resolution_clock::now();
+
     vector<Individual> selection;
-    if(size_to_select == 0)
+    if(size_to_select == 0) {
+        auto t_end = std::chrono::high_resolution_clock::now();
+        this->total_time_tie_breaking += std::chrono::duration_cast<std::chrono::duration<double>>(t_end - t_start).count();
         return selection;
+    }
 
     auto cd_sorted(std::move(this->compute_crowding_distance(res)));
     for(auto itr = cd_sorted.rbegin(); itr != cd_sorted.rend() && selection.size() < size_to_select; itr++){
@@ -43,5 +48,7 @@ vector<Individual> Balanced_NSGA<N_OBJ>::select_best_crowding_distance(vector<In
             }
         }
     }
+    auto t_end = std::chrono::high_resolution_clock::now();
+    this->total_time_tie_breaking += std::chrono::duration_cast<std::chrono::duration<double>>(t_end - t_start).count();
     return selection;
 }

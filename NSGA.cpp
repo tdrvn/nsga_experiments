@@ -3,32 +3,35 @@
 template <std::size_t N_OBJ>
 map<int, vector<Individual> > NSGA<N_OBJ>::non_dominated_sort(vector<Individual> &res){
 
-    //special case to not do this in the case of OneMinMax variants (all individuals have rank 0)
-    if(b_type == 1){
-        map<int, vector<Individual> > ans;
-        ans[0] = std::move(res);
-        res.clear();
-        return ans;
-    }
-
-    // special case for OneJumpZeroJump (less computation)
-    // the ranks need to be inverse
-    // in this case they are not consecutive numbers, but it doesnt matter as they are sorted increasingly
-    // (and for this benchmark and inidividual with a strictly bigger sum always dominates one with a smaller sum
-    if(b_type == 3){
-        map<int, vector<Individual> > ans;
-        for(auto &x: res){
-            auto val = f.compute(x);
-            auto rank = 2 * f.k + f.n - val[0] - val[1];
-            if(ans.count(rank))
-                ans[rank].push_back(x);
-            else
-                ans[rank] = {x};
-        }
-        return ans;
-    }
+//    //special case to not do this in the case of OneMinMax variants (all individuals have rank 0)
+//    if(b_type == 1){
+//        map<int, vector<Individual> > ans;
+//        ans[0] = std::move(res);
+//        res.clear();
+//        return ans;
+//    }
+//
+//    // special case for OneJumpZeroJump (less computation)
+//    // the ranks need to be inverse
+//    // in this case they are not consecutive numbers, but it doesnt matter as they are sorted increasingly
+//    // (and for this benchmark and inidividual with a strictly bigger sum always dominates one with a smaller sum
+//    if(b_type == 3){
+//        map<int, vector<Individual> > ans;
+//        for(auto &x: res){
+//            auto val = f.compute(x);
+//            auto rank = 2 * f.k + f.n - val[0] - val[1];
+//            if(ans.count(rank))
+//                ans[rank].push_back(x);
+//            else
+//                ans[rank] = {x};
+//        }
+//        return ans;
+//    }
 
 //instead of O(Pop_size ^ 2), we do O(f(Pop_size)^2) which should be faster for our benchmarks
+
+    auto t_start = std::chrono::high_resolution_clock::now();
+
     map<std::array<int, N_OBJ>, int> ranks_for_values;
     for(int i = 0; i < res.size(); i++){
         auto val = f.compute(res[i]);
@@ -68,6 +71,10 @@ map<int, vector<Individual> > NSGA<N_OBJ>::non_dominated_sort(vector<Individual>
             ans[rank] = {std::move(res[i])};
     }
     res.clear();
+
+    auto t_end = std::chrono::high_resolution_clock::now();
+    //this is in seconds
+    total_time_non_dominated_sorting += std::chrono::duration_cast<std::chrono::duration<double>>(t_end - t_start).count();
     return ans;
 }
 
@@ -101,6 +108,7 @@ vector<double> NSGA<N_OBJ>::compute_crowding_distance_objective(const vector<std
 
 template <std::size_t N_OBJ>
 map<double, vector<Individual>> NSGA<N_OBJ>::compute_crowding_distance(vector<Individual> &res){ // destroys res
+    auto t_start = std::chrono::high_resolution_clock::now();
     vector<std::array<int, N_OBJ>> values;
     for(auto x:res){
         values.push_back(f.compute(x));
@@ -124,14 +132,20 @@ map<double, vector<Individual>> NSGA<N_OBJ>::compute_crowding_distance(vector<In
         }
     }
     res.clear();
+    auto t_end = std::chrono::high_resolution_clock::now();
+    total_time_crowding_distance_computation += std::chrono::duration_cast<std::chrono::duration<double>>(t_end - t_start).count();
     return ans;
 }
 
 template <std::size_t N_OBJ>
 vector<Individual> NSGA<N_OBJ>::select_best_crowding_distance(vector<Individual> &res, int size_to_select){ // destroys res
+    auto t_start = std::chrono::high_resolution_clock::now();
     vector<Individual> selection;
-    if(size_to_select == 0)
+    if(size_to_select == 0) {
+        auto t_end = std::chrono::high_resolution_clock::now();
+        this->total_time_tie_breaking += std::chrono::duration_cast<std::chrono::duration<double>>(t_end - t_start).count();
         return selection;
+    }
 
     auto cd_sorted = this->compute_crowding_distance(res); // destroys res
     for(auto itr = cd_sorted.rbegin(); itr != cd_sorted.rend() && selection.size() < size_to_select; itr++){
@@ -149,6 +163,8 @@ vector<Individual> NSGA<N_OBJ>::select_best_crowding_distance(vector<Individual>
             }
         }
     }
+    auto t_end = std::chrono::high_resolution_clock::now();
+    this->total_time_tie_breaking += std::chrono::duration_cast<std::chrono::duration<double>>(t_end - t_start).count();
     return selection;
 }
 
