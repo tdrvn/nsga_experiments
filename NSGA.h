@@ -22,7 +22,9 @@ public:
 
     double total_time_non_dominated_sorting = 0;
     double total_time_crowding_distance_computation = 0;
-    double total_time_tie_breaking = 0;
+    double total_time_selection = 0;
+
+    double total_time_tiebreaker = 0;
 
     NSGA(int n, int population_size, Benchmark<N_OBJ> &bench): POP_SIZE(population_size), f(bench){
         for(int i = 0; i< POP_SIZE; i++){

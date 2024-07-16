@@ -143,7 +143,7 @@ vector<Individual> NSGA<N_OBJ>::select_best_crowding_distance(vector<Individual>
     vector<Individual> selection;
     if(size_to_select == 0) {
         auto t_end = std::chrono::high_resolution_clock::now();
-        this->total_time_tie_breaking += std::chrono::duration_cast<std::chrono::duration<double>>(t_end - t_start).count();
+        this->total_time_selection += std::chrono::duration_cast<std::chrono::duration<double>>(t_end - t_start).count();
         return selection;
     }
 
@@ -156,15 +156,18 @@ vector<Individual> NSGA<N_OBJ>::select_best_crowding_distance(vector<Individual>
             elements.clear();
         }
         else{
+            auto t_start1 = std::chrono::high_resolution_clock::now();
             //only add extra elements
             while(elements.size() > 0 && selection.size() < size_to_select){
                 selection.push_back(std::move(elements.back()));
                 elements.pop_back();
             }
+            auto t_end1 = std::chrono::high_resolution_clock::now();
+            this->total_time_tiebreaker += std::chrono::duration_cast<std::chrono::duration<double>>(t_end1 - t_start1).count();
         }
     }
     auto t_end = std::chrono::high_resolution_clock::now();
-    this->total_time_tie_breaking += std::chrono::duration_cast<std::chrono::duration<double>>(t_end - t_start).count();
+    this->total_time_selection += std::chrono::duration_cast<std::chrono::duration<double>>(t_end - t_start).count();
     return selection;
 }
 

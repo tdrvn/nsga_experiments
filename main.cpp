@@ -11,10 +11,11 @@
 #include "globals.h"
 #include <stdio.h>
 #include <chrono>
+
 using namespace std::chrono;
 
 
-void test_OneMinMax_classic(int k, int n, int coef, unsigned long seed, int nr_run, std::ostream& fout){
+void test_OneMinMax_classic(int k, int n, int coef, unsigned long seed, int nr_run, std::ostream &fout) {
     rand_gen.seed(seed);
 
     OneMinMaxBenchmark f(n);
@@ -23,14 +24,17 @@ void test_OneMinMax_classic(int k, int n, int coef, unsigned long seed, int nr_r
     NSGA<2> standard_nsga(n, pop_size, f);
     auto start = high_resolution_clock::now();
     standard_nsga.run();
-    auto end = high_resolution_clock ::now();
+    auto end = high_resolution_clock::now();
     auto rt = f.fitness_function_calls;
 
     auto duration = duration_cast<std::chrono::duration<double>>(end - start).count();
     fout << "OneMinMax," << n << "," << k << "," << pop_size << "," << nr_run << "," << seed
-         << "," << rt << ","<<duration<<","<<standard_nsga.total_time_non_dominated_sorting<<","<<standard_nsga.total_time_crowding_distance_computation<<","<<standard_nsga.total_time_tie_breaking << ", classic" << std::endl;
+         << "," << rt << "," << duration << "," << standard_nsga.total_time_non_dominated_sorting << ","
+         << standard_nsga.total_time_crowding_distance_computation << "," << standard_nsga.total_time_selection << ", "
+         << standard_nsga.total_time_tiebreaker << ", classic" << std::endl;
 }
-void test_OneMinMax_balanced(int k, int n, int coef, unsigned long seed, int nr_run, std::ostream& fout){
+
+void test_OneMinMax_balanced(int k, int n, int coef, unsigned long seed, int nr_run, std::ostream &fout) {
     rand_gen.seed(seed);
 
     OneMinMaxBenchmark f(n);
@@ -40,16 +44,18 @@ void test_OneMinMax_balanced(int k, int n, int coef, unsigned long seed, int nr_
 
     auto start = high_resolution_clock::now();
     balanced_nsga.run();
-    auto end = high_resolution_clock ::now();
+    auto end = high_resolution_clock::now();
 
     auto rt = f.fitness_function_calls;
     auto duration = duration_cast<std::chrono::duration<double>>(end - start).count();
 
     fout << "OneMinMax," << n << "," << k << "," << pop_size << "," << nr_run << "," << seed
-         << "," << rt << ","<<duration<<","<<balanced_nsga.total_time_non_dominated_sorting<<","<<balanced_nsga.total_time_crowding_distance_computation<<","<<balanced_nsga.total_time_tie_breaking << ", balanced" << std::endl;
+         << "," << rt << "," << duration << "," << balanced_nsga.total_time_non_dominated_sorting << ","
+         << balanced_nsga.total_time_crowding_distance_computation << "," << balanced_nsga.total_time_selection << ", "
+         << balanced_nsga.total_time_tiebreaker << ", balanced" << std::endl;
 }
 
-void test_LeadingOnesTrailingZeros_classic(int k, int n, int coef, unsigned long seed, int nr_run, std::ostream& fout){
+void test_LeadingOnesTrailingZeros_classic(int k, int n, int coef, unsigned long seed, int nr_run, std::ostream &fout) {
     rand_gen.seed(seed);
 
     LeadingOnesTrailingZeroBenchmark f(n);
@@ -61,7 +67,9 @@ void test_LeadingOnesTrailingZeros_classic(int k, int n, int coef, unsigned long
     fout << "LeadingOnesTrailingZeros," << n << "," << k << "," << pop_size << "," << nr_run << "," << seed
          << "," << rt << "," << "classic" << std::endl;
 }
-void test_LeadingOnesTrailingZeros_balanced(int k, int n, int coef, unsigned long seed, int nr_run, std::ostream& fout){
+
+void
+test_LeadingOnesTrailingZeros_balanced(int k, int n, int coef, unsigned long seed, int nr_run, std::ostream &fout) {
     rand_gen.seed(seed);
 
     LeadingOnesTrailingZeroBenchmark f(n);
@@ -74,7 +82,7 @@ void test_LeadingOnesTrailingZeros_balanced(int k, int n, int coef, unsigned lon
          << "," << rt << "," << "balanced" << std::endl;
 }
 
-void test_OneJumpZeroJump_classic(int k, int n, int coef, unsigned long seed, int nr_run, std::ostream& fout){
+void test_OneJumpZeroJump_classic(int k, int n, int coef, unsigned long seed, int nr_run, std::ostream &fout) {
     rand_gen.seed(seed);
 
     OneJumpZeroJumpBenchmark f(n, k);
@@ -87,7 +95,8 @@ void test_OneJumpZeroJump_classic(int k, int n, int coef, unsigned long seed, in
     fout << "OneJumpZeroJump," << n << "," << k << "," << pop_size << "," << nr_run << "," << seed
          << "," << rt << "," << "classic" << std::endl;
 }
-void test_OneJumpZeroJump_balanced(int k, int n, int coef, unsigned long seed, int nr_run, std::ostream& fout){
+
+void test_OneJumpZeroJump_balanced(int k, int n, int coef, unsigned long seed, int nr_run, std::ostream &fout) {
     rand_gen.seed(seed);
 
     OneJumpZeroJumpBenchmark f(n, k);
@@ -102,8 +111,7 @@ void test_OneJumpZeroJump_balanced(int k, int n, int coef, unsigned long seed, i
 }
 
 
-
-void test_4OneMinMax_classic(int k, int n, int coef, unsigned long seed, int nr_run, std::ostream& fout){
+void test_4OneMinMax_classic(int k, int n, int coef, unsigned long seed, int nr_run, std::ostream &fout) {
     rand_gen.seed(seed);
 
     MOneMinMaxBenchmark<4> f(n);
@@ -116,7 +124,8 @@ void test_4OneMinMax_classic(int k, int n, int coef, unsigned long seed, int nr_
     fout << "4OneMinMax," << n << "," << k << "," << pop_size << "," << nr_run << "," << seed
          << "," << rt << "," << "classic" << std::endl;
 }
-void test_4OneMinMax_balanced(int k, int n, int coef, unsigned long seed, int nr_run, std::ostream& fout){
+
+void test_4OneMinMax_balanced(int k, int n, int coef, unsigned long seed, int nr_run, std::ostream &fout) {
     rand_gen.seed(seed);
 
     MOneMinMaxBenchmark<4> f(n);
@@ -141,7 +150,8 @@ int main() {
 
 
     std::ofstream fout("experimental_extra_time_omm.csv");
-    fout << "Benchmark,n,k,Pop_size,Number_run,Seed,Runtime_Pareto_front,Total_Runtime(s),Total_Time_Spent_Non_Dominated_Sort(s),Total_Time_Spent_Crowding_Distance_Computation(s),Total_Time_Spent_Tie_Breaker(s),Variant_NSGA\n";
+    fout
+            << "Benchmark,n,k,Pop_size,Number_run,Seed,Runtime_Pareto_front,Total_Runtime(s),Total_Time_Spent_Non_Dominated_Sort(s),Total_Time_Spent_Crowding_Distance_Computation(s),Total_Time_Spent_Selection_Best_Crowding_Distance(s),Total_Time_Tiebreaker(s),Variant_NSGA\n";
     std::mt19937 seed_generator(1);
     const int RUNS = 20;
     const int EXTRA_RUNS = 30;
@@ -158,75 +168,75 @@ int main() {
          * OneJumpZeroJump was too slow to run for all the values and was ended sooner
          */
 
-       seed_generator.seed(1);
-       for(int k = 1; k <= 1; k++){
-           for (int n = NMIN; n <= NMAX; n += 10) {
-               for (int coef = 2; coef <= 8; coef *= 2) {
-                   for (int nr_run = 1; nr_run <= RUNS; nr_run++) {
-                       //classic
-                       {
-                           auto seed = seed_generator();
+        seed_generator.seed(1);
+        for (int k = 1; k <= 1; k++) {
+            for (int n = NMIN; n <= NMAX; n += 10) {
+                for (int coef = 2; coef <= 8; coef *= 2) {
+                    for (int nr_run = 1; nr_run <= RUNS; nr_run++) {
+                        //classic
+                        {
+                            auto seed = seed_generator();
 
-                           test_OneMinMax_classic(k, n, coef, seed, nr_run, fout);
-                       }
-                       //balanced
-                       {
-                           auto seed = seed_generator();
+                            test_OneMinMax_classic(k, n, coef, seed, nr_run, fout);
+                        }
+                        //balanced
+                        {
+                            auto seed = seed_generator();
 
-                           test_OneMinMax_balanced(k, n, coef, seed, nr_run, fout);
-                       }
-                   }
-               }
-           }
-       }
+                            test_OneMinMax_balanced(k, n, coef, seed, nr_run, fout);
+                        }
+                    }
+                }
+            }
+        }
 
-       //TRY for N = 16 M
-       seed_generator.seed(2);
-      // one min max for N = 16M,  just 20 runs
-       for(int k = 1; k <= 1; k++){
-           for (int n = NMIN; n <= NMAX; n += 10) {
-               for (int coef = 16; coef <= 16; coef *= 2) {
-                   for (int nr_run = 1; nr_run <= RUNS; nr_run++) {
-                       //classic
-                       {
-                           auto seed = seed_generator();
+        //TRY for N = 16 M
+        seed_generator.seed(2);
+        // one min max for N = 16M,  just 20 runs
+        for (int k = 1; k <= 1; k++) {
+            for (int n = NMIN; n <= NMAX; n += 10) {
+                for (int coef = 16; coef <= 16; coef *= 2) {
+                    for (int nr_run = 1; nr_run <= RUNS; nr_run++) {
+                        //classic
+                        {
+                            auto seed = seed_generator();
 
-                           test_OneMinMax_classic(k, n, coef, seed, nr_run, fout);
-                       }
-                       //balanced
-                       {
-                           auto seed = seed_generator();
+                            test_OneMinMax_classic(k, n, coef, seed, nr_run, fout);
+                        }
+                        //balanced
+                        {
+                            auto seed = seed_generator();
 
-                           test_OneMinMax_balanced(k, n, coef, seed, nr_run, fout);
-                       }
-                   }
-               }
-           }
-       }
-       printf("Finished preliminary!\n");
-       //EXTRA RUNS OMM
-       seed_generator.seed(3);
-       //OneMinMax
-       for(int k = 1; k <= 1; k++){
-           for (int n = NMIN; n <= NMAX; n += 10) {
-               for (int coef = 2; coef <= 16; coef *= 2) {
-                   for (int nr_run = RUNS + 1; nr_run <= RUNS + EXTRA_RUNS; nr_run++) {
-                       //classic
-                       {
-                           auto seed = seed_generator();
+                            test_OneMinMax_balanced(k, n, coef, seed, nr_run, fout);
+                        }
+                    }
+                }
+            }
+        }
+        printf("Finished preliminary!\n");
+        //EXTRA RUNS OMM
+        seed_generator.seed(3);
+        //OneMinMax
+        for (int k = 1; k <= 1; k++) {
+            for (int n = NMIN; n <= NMAX; n += 10) {
+                for (int coef = 2; coef <= 16; coef *= 2) {
+                    for (int nr_run = RUNS + 1; nr_run <= RUNS + EXTRA_RUNS; nr_run++) {
+                        //classic
+                        {
+                            auto seed = seed_generator();
 
-                           test_OneMinMax_classic(k, n, coef, seed, nr_run, fout);
-                       }
-                       //balanced
-                       {
-                           auto seed = seed_generator();
+                            test_OneMinMax_classic(k, n, coef, seed, nr_run, fout);
+                        }
+                        //balanced
+                        {
+                            auto seed = seed_generator();
 
-                           test_OneMinMax_balanced(k, n, coef, seed, nr_run, fout);
-                       }
-                   }
-               }
-           }
-       }
+                            test_OneMinMax_balanced(k, n, coef, seed, nr_run, fout);
+                        }
+                    }
+                }
+            }
+        }
 
     }
 
