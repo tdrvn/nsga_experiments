@@ -147,7 +147,7 @@ vector<Individual> NSGA<N_OBJ>::select_best_crowding_distance(vector<Individual>
         return selection;
     }
 
-    auto& cd_sorted = this->compute_crowding_distance(res); // destroys res
+    auto cd_sorted = this->compute_crowding_distance(res); // destroys res
     for(auto itr = cd_sorted.rbegin(); itr != cd_sorted.rend() && selection.size() < size_to_select; itr++){
         auto &elements = (*itr).second;
 //        std::shuffle(elements.begin(), elements.end(), rand_gen);

@@ -11,7 +11,7 @@ vector<Individual> Balanced_NSGA<N_OBJ>::select_best_crowding_distance(vector<In
         return selection;
     }
 
-    auto& cd_sorted = (this->compute_crowding_distance(res));
+    auto cd_sorted = (this->compute_crowding_distance(res));
     for(auto itr = cd_sorted.rbegin(); itr != cd_sorted.rend() && selection.size() < size_to_select; itr++){
         auto& elements = (*itr).second;
         //std::shuffle(elements.begin(), elements.end(), rand_gen);
@@ -26,7 +26,7 @@ vector<Individual> Balanced_NSGA<N_OBJ>::select_best_crowding_distance(vector<In
 
             map<std::array<int, N_OBJ>, vector<Individual> > value_map;
             for(auto& x:elements){
-                auto& val = this->f.compute(x);
+                auto val = this->f.compute(x);
                 if(value_map.count(val))
                     value_map[val].emplace_back(std::move(x));
                 else
