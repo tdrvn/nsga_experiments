@@ -150,7 +150,6 @@ vector<Individual> NSGA<N_OBJ>::select_best_crowding_distance(vector<Individual>
     auto cd_sorted = this->compute_crowding_distance(res); // destroys res
     for(auto itr = cd_sorted.rbegin(); itr != cd_sorted.rend() && selection.size() < size_to_select; itr++){
         auto &elements = (*itr).second;
-//        std::shuffle(elements.begin(), elements.end(), rand_gen);
         if(selection.size() + elements.size() <= size_to_select){
             std::move(elements.begin(), elements.end(), std::back_inserter(selection));
             elements.clear();
@@ -158,9 +157,10 @@ vector<Individual> NSGA<N_OBJ>::select_best_crowding_distance(vector<Individual>
         else{
             auto t_start1 = std::chrono::high_resolution_clock::now();
             //only add extra elements
-            while(elements.size() > 0 && selection.size() < size_to_select){
-                selection.push_back(std::move(elements.back()));
-                elements.pop_back();
+            if(elements.size() > 0 && selection.size() < size_to_select){
+
+                auto csize = selection.size();
+                std::sample(elements.begin(), elements.end(),std::back_inserter(selection), size_to_select - csize, rand_gen);
             }
             auto t_end1 = std::chrono::high_resolution_clock::now();
             this->total_time_tiebreaker += std::chrono::duration_cast<std::chrono::duration<double>>(t_end1 - t_start1).count();

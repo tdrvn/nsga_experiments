@@ -44,9 +44,9 @@ vector<Individual> Balanced_NSGA<N_OBJ>::select_best_crowding_distance(vector<In
             }
 
             //std::shuffle(remaining.begin(), remaining.end(), rand_gen);
-            while(selection.size() < size_to_select){
-                selection.push_back(std::move(remaining.back()));
-                remaining.pop_back();
+            if (selection.size() < size_to_select){
+                auto csize = selection.size();
+                std::sample(remaining.begin(), remaining.end(),std::back_inserter(selection), size_to_select - csize, rand_gen);
             }
             auto t_end1 = std::chrono::high_resolution_clock::now();
             this->total_time_tiebreaker += std::chrono::duration_cast<std::chrono::duration<double>>(t_end1 - t_start1).count();
