@@ -11,7 +11,21 @@ public:
 
     LeadingOnesTrailingZeroBenchmark(int _n) : Benchmark(_n) {}
 
-    virtual std::array<int, 2> compute(const Individual &x){
+    bool is_pareto_front_complete(const std::vector<std::shared_ptr<Individual>> &pop) override{
+        std::set<std::array<int, 2>> values;
+        for(int i = 0; i < pop.size(); i++){
+            auto x = getCompute(pop[i]);
+            if(x[0] + x[1] == n)
+                values.insert(x);
+        }
+        //std::cerr<<"Pareto front is: "<<values.size()<<" out of "<<PARETO_FRONT_SIZE<<std::endl;
+        if(values.size() == PARETO_FRONT_SIZE)
+            return true;
+        return false;
+    }
+
+private:
+    std::array<int, 2> compute(const Individual &x) override{
         //fitness_function_calls ++;
         std::array<int, 2> ans = {0, 0};
         for(int i = 0; i < n; i++){
@@ -29,21 +43,6 @@ public:
         }
         return ans;
     }
-
-
-    virtual bool is_pareto_front_complete(const std::vector<std::shared_ptr<Individual>> &pop){
-        std::set<std::array<int, 2>> values;
-        for(int i = 0; i < pop.size(); i++){
-            auto x = compute(*pop[i]);
-            if(x[0] + x[1] == n)
-                values.insert(x);
-        }
-        //std::cerr<<"Pareto front is: "<<values.size()<<" out of "<<PARETO_FRONT_SIZE<<std::endl;
-        if(values.size() == PARETO_FRONT_SIZE)
-            return true;
-        return false;
-    }
-
 };
 
 

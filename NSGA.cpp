@@ -34,7 +34,7 @@ map<int, vector<std::shared_ptr<Individual>> > NSGA<N_OBJ>::non_dominated_sort(c
 
     map<std::array<int, N_OBJ>, int> ranks_for_values;
     for (int i = 0; i < res.size(); i++) {
-        auto val = f.compute(*res[i]);
+        auto val = f.getCompute(res[i]);
         ranks_for_values[val] = 0;
     }
     for (auto itr = ranks_for_values.rbegin(); itr != ranks_for_values.rend(); itr++) {
@@ -64,7 +64,7 @@ map<int, vector<std::shared_ptr<Individual>> > NSGA<N_OBJ>::non_dominated_sort(c
     map<int, vector<std::shared_ptr<Individual>>> ans;
     for (int i = 0; i < res.size(); i++) {
 
-        int rank = ranks_for_values[f.compute(*res[i])];
+        int rank = ranks_for_values[f.getCompute(res[i])];
         if (ans.count(rank))
             ans[rank].push_back((res[i]));
         else
@@ -110,7 +110,7 @@ map<double, vector<std::shared_ptr<Individual>>> NSGA<N_OBJ>::compute_crowding_d
     auto t_start = std::chrono::high_resolution_clock::now();
     vector<std::array<int, N_OBJ>> values;
     for (auto& x: res) {
-        values.push_back(f.compute(*x));
+        values.push_back(f.getCompute(x));
     }
 
     vector<double> cd_score(res.size(), 0);

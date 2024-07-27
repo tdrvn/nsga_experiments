@@ -16,7 +16,21 @@ public:
 
     OneJumpZeroJumpBenchmark(int _n, int _k) : Benchmark(_n), PARETO_FRONT_SIZE(_n - 2*_k + 3) { k = _k; }
 
-    virtual std::array<int, 2> compute(const Individual &x){
+
+    bool is_pareto_front_complete(const std::vector<std::shared_ptr<Individual>> &pop) override{
+        std::map<std::array<int, 2>, int> values;
+        for(int i = 0; i < pop.size(); i++){
+            auto val = getCompute(pop[i]);
+            if(val[0] + val[1] == n + 2 * k)
+                values[val] = values[val] + 1;
+        }
+        if(values.size() == PARETO_FRONT_SIZE)
+            return true;
+        return false;
+    }
+
+private:
+    std::array<int, 2> compute(const Individual &x) override{
         //this->fitness_function_calls ++;
         int nr0 = 0, nr1 = 0;
         for(int i = 0; i < n; i++){
@@ -38,40 +52,6 @@ public:
 
         return ans;
     }
-
-
-    virtual bool is_pareto_front_complete(const std::vector<std::shared_ptr<Individual>> &pop){
-        std::map<std::array<int, 2>, int> values;
-        for(int i = 0; i < pop.size(); i++){
-            auto val = compute(*pop[i]);
-            if(val[0] + val[1] == n + 2 * k)
-                values[val] = values[val] + 1;
-
-        }
-//        bool inner = true;
-//        for(int i = k; i <= n - k; i++){
-//            if(values.count({k + i, k +  n - i}) == false)
-//                inner = false;
-//        }
-//        if(inner && first_time_inner == -1){
-//            first_time_inner = fitness_function_calls;
-//            std::cerr<<"Reached inner PF after "<<first_time_inner<<" calls"<<std::endl;
-//        }
-//        if(first_time_inner != -1){
-//            std::cerr<<"left pop: "<<values[{2*k, n}]<<"\n";
-//            std::cerr<<"right pop: "<<values[{n, 2*k}]<<"\n";
-//        }
-//        std::cerr<<"Pareto front is: "<<values.size()<<" out of "<<PARETO_FRONT_SIZE<<std::endl;
-//        std::cerr<<"The values are:";
-//        for(auto val: values){
-//            std::cerr<<"( "<<val.first<<" "<<val.second<<" ), ";
-//        }
-       // std::cerr<<"\n";
-        if(values.size() == PARETO_FRONT_SIZE)
-            return true;
-        return false;
-    }
-
 
 
 };

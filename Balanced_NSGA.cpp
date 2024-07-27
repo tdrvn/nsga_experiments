@@ -23,9 +23,9 @@ vector<std::shared_ptr<Individual>> Balanced_NSGA<N_OBJ>::select_best_crowding_d
             auto t_start1 = std::chrono::high_resolution_clock::now();
             int remaining_to_select = size_to_select - selection.size();
 
-            map<std::array<int, N_OBJ>, vector<std::shared_ptr<Individual>> > value_map;
+            unordered_map<std::array<int, N_OBJ>, vector<std::shared_ptr<Individual>>, typename Benchmark<N_OBJ>::HashFunction > value_map;
             for(auto& x:elements){
-                auto val = this->f.compute(*x);
+                auto val = this->f.getCompute(x);
                 if(value_map.count(val))
                     value_map[val].emplace_back(x);
                 else
