@@ -8,6 +8,7 @@
 #include "Individual.h"
 #include <array>
 #include <vector>
+#include <memory>
 
 template <std::size_t N_OBJECTIVES>
 class Benchmark {
@@ -21,7 +22,7 @@ public:
 
     Benchmark(int _n) : n(_n) {}
 
-    virtual bool is_pareto_front_complete(const std::vector<Individual> &pop) = 0;
+    virtual bool is_pareto_front_complete(const std::vector<std::shared_ptr<Individual>> &pop) = 0;
 
     virtual std::array<int, N_OBJECTIVES> compute(const Individual&) = 0;
 

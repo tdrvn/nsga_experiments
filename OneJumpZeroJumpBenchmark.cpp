@@ -40,10 +40,10 @@ public:
     }
 
 
-    virtual bool is_pareto_front_complete(const std::vector<Individual> &pop){
+    virtual bool is_pareto_front_complete(const std::vector<std::shared_ptr<Individual>> &pop){
         std::map<std::array<int, 2>, int> values;
         for(int i = 0; i < pop.size(); i++){
-            auto val = compute(pop[i]);
+            auto val = compute(*pop[i]);
             if(val[0] + val[1] == n + 2 * k)
                 values[val] = values[val] + 1;
 

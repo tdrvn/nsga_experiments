@@ -13,8 +13,7 @@ public:
 
     Balanced_NSGA(int _n, int population_size, Benchmark<N_OBJ> &bench): NSGA<N_OBJ>(_n, population_size, bench) {}
 
-    virtual
-    vector<Individual> select_best_crowding_distance(vector<Individual> &res, int size_to_select);
+    vector<std::shared_ptr<Individual>> select_best_crowding_distance(const vector<std::shared_ptr<Individual>> &res, int size_to_select) override;
 };
 
 

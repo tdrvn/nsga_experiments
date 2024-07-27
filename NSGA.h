@@ -9,6 +9,7 @@
 #include <limits>
 #include <map>
 #include <chrono>
+#include <memory>
 
 using namespace std;
 
@@ -17,7 +18,7 @@ class NSGA {
 public:
     Benchmark<N_OBJ> &f;
     int b_type = 0;
-    vector<Individual> pop;
+    vector<std::shared_ptr<Individual>> pop;
     int POP_SIZE;
 
     double total_time_non_dominated_sorting = 0;
@@ -28,32 +29,30 @@ public:
 
     NSGA(int n, int population_size, Benchmark<N_OBJ> &bench): POP_SIZE(population_size), f(bench){
         for(int i = 0; i< POP_SIZE; i++){
-            Individual x(n);
-            x.initialize_individual();
-            pop.push_back(x);
+            pop.emplace_back(std::make_shared<Individual>(n));
         }
     }
 
     /**
      * @return For each rank-value the individuals with that rank.
      */
-    map<int, vector<Individual> > non_dominated_sort(vector<Individual> &res);
+    map<int, vector<std::shared_ptr<Individual>> > non_dominated_sort(const vector<std::shared_ptr<Individual>> &res);
 
     /**
      *
      * @param res
      * @return Computes in the same order.
      */
-    vector<double> compute_crowding_distance_objective(const vector<std::array<int, N_OBJ>> &values, const int obj);
+    vector<double> compute_crowding_distance_objective(const vector<std::array<int, N_OBJ>> &values, int obj);
     /**
      *
      * @param res
      * @return Map of crowding distance and individuals
      */
-    map<double, vector<Individual>> compute_crowding_distance(vector<Individual> &res);
+    map<double, vector<std::shared_ptr<Individual>>> compute_crowding_distance(const vector<std::shared_ptr<Individual>> &res);
 
     virtual //size_to_select is always smaller than res
-    vector<Individual> select_best_crowding_distance(vector<Individual> &res, int size_to_select);
+    vector<std::shared_ptr<Individual>> select_best_crowding_distance(const vector<std::shared_ptr<Individual>> &res, int size_to_select);
 
     long long run();
 };

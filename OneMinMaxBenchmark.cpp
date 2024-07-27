@@ -28,10 +28,10 @@ public:
     }
 
 
-    virtual bool is_pareto_front_complete(const std::vector<Individual> &pop){
+    virtual bool is_pareto_front_complete(const std::vector<std::shared_ptr<Individual>> &pop){
         std::set<std::array<int, 2>> values;
         for(int i = 0; i < pop.size(); i++){
-            values.insert(compute(pop[i]));
+            values.insert(compute(*pop[i]));
         }
         //std::cerr<<"Pareto front is: "<<values.size()<<" out of "<<PARETO_FRONT_SIZE<<std::endl;
         if(values.size() == PARETO_FRONT_SIZE)

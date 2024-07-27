@@ -31,10 +31,10 @@ public:
     }
 
 
-    virtual bool is_pareto_front_complete(const std::vector<Individual> &pop){
+    virtual bool is_pareto_front_complete(const std::vector<std::shared_ptr<Individual>> &pop){
         std::set<std::array<int, 2>> values;
         for(int i = 0; i < pop.size(); i++){
-            auto x = compute(pop[i]);
+            auto x = compute(*pop[i]);
             if(x[0] + x[1] == n)
                 values.insert(x);
         }
