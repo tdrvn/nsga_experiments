@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.20)
 project(c___nsga)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED 11)
 
 
 # Add your source files
